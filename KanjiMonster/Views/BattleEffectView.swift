@@ -10,7 +10,6 @@ import SwiftUI
 struct BattleEffectView: View {
     let event: BattleEvent
     let correctReading: String
-    let monsterDialogue: String?
 
     @State private var opacity: Double = 0
     @State private var scale: CGFloat = 0.5
@@ -31,17 +30,11 @@ struct BattleEffectView: View {
                     Text("正解: \(correctReading)")
                         .pixelFont(14)
                         .foregroundStyle(GBColor.light)
-                    if let dialogue = monsterDialogue {
-                        dialogueBubble(text: dialogue)
-                    }
                 }
 
             case .monsterDefeated:
                 VStack(spacing: 6) {
                     effectLabel(text: "DEFEATED!", color: GBColor.lightest)
-                    if let dialogue = monsterDialogue {
-                        dialogueBubble(text: dialogue)
-                    }
                 }
 
             case .levelUp(let level):
@@ -90,23 +83,14 @@ struct BattleEffectView: View {
             .foregroundStyle(color)
             .shadow(color: GBColor.darkest, radius: 2, x: 2, y: 2)
     }
-
-    private func dialogueBubble(text: String) -> some View {
-        Text("「\(text)」")
-            .pixelFont(10)
-            .foregroundStyle(GBColor.light)
-            .padding(8)
-            .background(GBColor.darkest.opacity(0.8))
-            .pixelBorder(color: GBColor.dark, width: 1)
-    }
 }
 
 #Preview {
     VStack(spacing: 30) {
-        BattleEffectView(event: .correct, correctReading: "", monsterDialogue: nil)
-        BattleEffectView(event: .wrong, correctReading: "ひまわり", monsterDialogue: "甘いぞ！")
-        BattleEffectView(event: .monsterDefeated, correctReading: "", monsterDialogue: "ぐふっ...")
-        BattleEffectView(event: .levelUp(.kyu3), correctReading: "", monsterDialogue: nil)
+        BattleEffectView(event: .correct, correctReading: "")
+        BattleEffectView(event: .wrong, correctReading: "ひまわり")
+        BattleEffectView(event: .monsterDefeated, correctReading: "")
+        BattleEffectView(event: .levelUp(.kyu3), correctReading: "")
     }
     .padding()
     .gbScreen()

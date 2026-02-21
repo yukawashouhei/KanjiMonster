@@ -111,6 +111,7 @@ final class GameViewModel {
         score += 10 * currentLevel.scoreMultiplier
 
         if monsterHitCount >= 3 {
+            generateMonsterDefeatDialogue()
             battleEvent = .monsterDefeated
             defeatedCount += 1
 
@@ -267,21 +268,15 @@ final class GameViewModel {
             Task {
                 let dialogue = await service.generateMonsterDialogue(
                     monsterName: currentMonster.name,
-                    scene: "攻撃した"
+                    scene: "攻撃した",
+                    level: currentLevel
                 )
                 await MainActor.run {
                     self.monsterDialogue = dialogue
                 }
             }
         } else {
-            let fallbacks = [
-                "グルルル...！",
-                "まだまだだな！",
-                "甘いぞ、人間！",
-                "ハハハ！弱い！",
-                "もう一度来い！",
-            ]
-            monsterDialogue = fallbacks.randomElement()
+            monsterDialogue = Self.localAttackDialogue(for: currentLevel)
         }
     }
 
@@ -290,20 +285,85 @@ final class GameViewModel {
             Task {
                 let dialogue = await service.generateMonsterDialogue(
                     monsterName: currentMonster.name,
-                    scene: "倒された"
+                    scene: "倒された",
+                    level: currentLevel
                 )
                 await MainActor.run {
                     self.monsterDialogue = dialogue
                 }
             }
         } else {
-            let fallbacks = [
-                "ぐふっ...やるな...",
-                "覚えておけ...！",
-                "まさか...負けるとは...",
-                "次は負けんぞ...！",
-            ]
-            monsterDialogue = fallbacks.randomElement()
+            monsterDialogue = Self.localDefeatDialogue(for: currentLevel)
         }
+    }
+
+    private static func localAttackDialogue(for level: KanjiLevel) -> String {
+        let fallbacks: [String]
+        switch level {
+        case .kyu5:
+            fallbacks = [
+                "ウガー！", "グオォ！", "グルル…", "グゥ！", "ウォォ！",
+                "ガオ！", "グルル！", "ウウ！", "ンガ！"
+            ]
+        case .kyu4:
+            fallbacks = [
+                "グルルル...！", "甘い！", "ウォ！", "グヌ！", "ガル！",
+                "うぐっ！", "ぐお！", "まだまだ！", "ふん！"
+            ]
+        case .kyu3:
+            fallbacks = [
+                "甘いぞ！", "まだまだだな！", "ハハハ！",
+                "弱い弱い！", "その程度か！", "かかってこい！",
+                "ふざけるな！", "舐めてんのか！", "楽勝だ！"
+            ]
+        case .kyu2:
+            fallbacks = [
+                "甘いぞ、人間！", "許さぬ。", "神の怒りだ。",
+                "裁きを下す。", "愚か者め。", "消えよ、凡人。",
+                "ひれ伏せ。", "消滅せよ。", "舐めるな！"
+            ]
+        case .kyu1:
+            fallbacks = [
+                "愚かな者よ。", "我の前にひれ伏せ。", "裁きの時だ。",
+                "消えろ、虫けら。", "神の裁きだ。", "許しは請わぬ。",
+                "跪け。", "地の底に堕ちよ。", "我が怒りを味わえ。"
+            ]
+        }
+        return fallbacks.randomElement()!
+    }
+
+    private static func localDefeatDialogue(for level: KanjiLevel) -> String {
+        let fallbacks: [String]
+        switch level {
+        case .kyu5:
+            fallbacks = [
+                "ウガ…", "グオ…", "……", "グヌ…", "ウウ…",
+                "ガ…", "グゥ…", "……", "ン…"
+            ]
+        case .kyu4:
+            fallbacks = [
+                "ぐふ…", "やられた…", "うう…", "ぐぬ…", "うぐ…",
+                "くっ…", "あう…", "んぐ…", "うっ…"
+            ]
+        case .kyu3:
+            fallbacks = [
+                "ぐふっ...やるな...", "覚えておけ...！", "まさか...",
+                "くっ...負けた...", "次は...負けん...！", "やるじゃねえか...",
+                "ひどい...！", "くやしい...！", "おぼえてろ...！"
+            ]
+        case .kyu2:
+            fallbacks = [
+                "覚えておけ...！", "まさか...負けるとは...", "次は負けんぞ...！",
+                "くっ...甘く見た...", "おのれ...！", "まだ終わってない...！",
+                "許さぬ...必ず...", "我が...退く...？", "次は...裁きだ..."
+            ]
+        case .kyu1:
+            fallbacks = [
+                "神が...負ける...？", "許す...覚悟せよ...", "ふっ...興が乗った...",
+                "愚かだが...認めよう。", "我を...退かせたか...", "面白い...次は本気だ。",
+                "裁きは...後日に...", "呪いを...受けよ...", "見事だ。認めよう。"
+            ]
+        }
+        return fallbacks.randomElement()!
     }
 }

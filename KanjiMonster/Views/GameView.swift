@@ -103,12 +103,24 @@ struct GameView: View {
     // MARK: - Monster Area
 
     private var monsterArea: some View {
-        MonsterSpriteView(
-            monster: viewModel.currentMonster,
-            isHit: viewModel.battleEvent == .correct,
-            isDefeated: viewModel.battleEvent == .monsterDefeated
-        )
-        .frame(height: 120)
+        VStack(spacing: 6) {
+            MonsterSpriteView(
+                monster: viewModel.currentMonster,
+                isHit: viewModel.battleEvent == .correct,
+                isDefeated: viewModel.battleEvent == .monsterDefeated
+            )
+            .frame(height: 120)
+
+            if let dialogue = viewModel.monsterDialogue {
+                Text("「\(dialogue)」")
+                    .pixelFont(10)
+                    .foregroundStyle(GBColor.light)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(GBColor.darkest.opacity(0.8))
+                    .pixelBorder(color: GBColor.dark, width: 1)
+            }
+        }
     }
 
     // MARK: - Kanji Area
@@ -153,8 +165,7 @@ struct GameView: View {
             Spacer()
             BattleEffectView(
                 event: viewModel.battleEvent,
-                correctReading: viewModel.currentKanji.readings.first ?? "",
-                monsterDialogue: viewModel.monsterDialogue
+                correctReading: viewModel.currentKanji.readings.first ?? ""
             )
             Spacer()
         }
