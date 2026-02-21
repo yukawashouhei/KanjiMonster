@@ -12,6 +12,8 @@ struct GameView: View {
 
     @State private var shakeOffset: CGFloat = 0
     @State private var flashOpacity: Double = 0
+    @State private var bgmPlayer = BattleBGMPlayer()
+    @AppStorage(BGMEnabledStorage.key) private var bgmEnabled: Bool = true
 
     var body: some View {
         ZStack {
@@ -52,6 +54,21 @@ struct GameView: View {
         }
         .gbScreen()
         .offset(x: shakeOffset)
+        .onAppear {
+            if bgmEnabled { bgmPlayer.play(for: viewModel.currentLevel) }
+            else { bgmPlayer.stop() }
+        }
+        .onDisappear {
+            bgmPlayer.stop()
+        }
+        .onChange(of: viewModel.currentLevel) { _, newLevel in
+            if bgmEnabled { bgmPlayer.play(for: newLevel) }
+            else { bgmPlayer.stop() }
+        }
+        .onChange(of: bgmEnabled) { _, enabled in
+            if enabled { bgmPlayer.play(for: viewModel.currentLevel) }
+            else { bgmPlayer.stop() }
+        }
         .onChange(of: viewModel.battleEvent) { _, newEvent in
             handleBattleEvent(newEvent)
         }
@@ -86,6 +103,18 @@ struct GameView: View {
             Spacer()
 
             streakIndicator
+
+            Button {
+                bgmEnabled.toggle()
+            } label: {
+                Image(systemName: bgmEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(bgmEnabled ? GBColor.lightest : GBColor.dark)
+                    .frame(width: 36, height: 32)
+                    .background(GBColor.dark)
+                    .pixelBorder(color: GBColor.light, width: 1)
+            }
+            .buttonStyle(.plain)
         }
     }
 
