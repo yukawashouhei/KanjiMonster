@@ -63,15 +63,16 @@ final class GameViewModel {
 
     // MARK: - Game Flow
 
-    func startGame() {
+    func startGame(initialLevel: KanjiLevel? = nil) {
         phase = .playing
-        currentLevel = .kyu5
+        let startLevel = initialLevel ?? LastPlayedLevelStorage.load() ?? .kyu5
+        currentLevel = startLevel
+        highestLevel = startLevel
         playerHP = maxHP
         streak = 0
         score = 0
         monsterHitCount = 0
         defeatedCount = 0
-        highestLevel = .kyu5
         usedKanjiIDs = []
         battleEvent = .none
         hintText = nil
@@ -97,6 +98,7 @@ final class GameViewModel {
     }
 
     func returnToTitle() {
+        LastPlayedLevelStorage.save(currentLevel)
         phase = .title
         stopTimer()
     }

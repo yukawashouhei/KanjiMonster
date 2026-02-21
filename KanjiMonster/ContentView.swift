@@ -14,9 +14,9 @@ struct ContentView: View {
         Group {
             switch viewModel.phase {
             case .title:
-                TitleScreenView(onStart: {
+                TitleScreenView(onStart: { selectedLevel in
                     viewModel.geminiService = APIConfig.createGeminiService()
-                    viewModel.startGame()
+                    viewModel.startGame(initialLevel: selectedLevel)
                 })
 
             case .playing:

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		7DB667A12F494C6600B9D9E1 /* KanjiMonster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KanjiMonster.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DB669872F496B1B00B9D9E1 /* KanjiMonster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KanjiMonster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,16 @@
 			isa = PBXGroup;
 			children = (
 				7DB667A32F494C6600B9D9E1 /* KanjiMonster */,
-				7DB667A22F494C6600B9D9E1 /* Products */,
+				7DB667A22F494C6600B9D9E1 /* KanjiMonster/Fonts */,
 			);
 			sourceTree = "<group>";
 		};
-		7DB667A22F494C6600B9D9E1 /* Products */ = {
+		7DB667A22F494C6600B9D9E1 /* KanjiMonster/Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				7DB667A12F494C6600B9D9E1 /* KanjiMonster.app */,
+				7DB669872F496B1B00B9D9E1 /* KanjiMonster.app */,
 			);
-			name = Products;
+			path = KanjiMonster/Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -67,7 +67,7 @@
 			packageProductDependencies = (
 			);
 			productName = KanjiMonster;
-			productReference = 7DB667A12F494C6600B9D9E1 /* KanjiMonster.app */;
+			productReference = 7DB669872F496B1B00B9D9E1 /* KanjiMonster.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -95,7 +95,7 @@
 			mainGroup = 7DB667982F494C6500B9D9E1;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 7DB667A22F494C6600B9D9E1 /* Products */;
+			productRefGroup = 7DB667A22F494C6600B9D9E1 /* KanjiMonster/Fonts */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

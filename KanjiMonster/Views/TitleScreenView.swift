@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct TitleScreenView: View {
-    let onStart: () -> Void
+    let onStart: (KanjiLevel?) -> Void
 
     @State private var titleScale: CGFloat = 0.8
     @State private var monsterOffset: CGFloat = 20
     @State private var showStartButton = false
     @State private var blinkStart = false
+    @State private var selectedLevel: KanjiLevel? = nil
+
+    private var levelOrder: [KanjiLevel] {
+        KanjiLevel.allCases.sorted { $0.rawValue > $1.rawValue }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -21,9 +26,13 @@ struct TitleScreenView: View {
 
             titleText
 
-            Spacer().frame(height: 40)
+            Spacer().frame(height: 24)
 
             monsterShowcase
+
+            Spacer().frame(height: 24)
+
+            levelSelector
 
             Spacer().frame(height: 50)
 
@@ -72,6 +81,34 @@ struct TitleScreenView: View {
         .scaleEffect(titleScale)
     }
 
+    private var levelSelector: some View {
+        VStack(spacing: 6) {
+            Text("LEVEL")
+                .pixelFont(10)
+                .foregroundStyle(GBColor.dark)
+
+            HStack(spacing: 6) {
+                ForEach(levelOrder, id: \.rawValue) { level in
+                    Button {
+                        if selectedLevel == level {
+                            selectedLevel = nil
+                        } else {
+                            selectedLevel = level
+                        }
+                    } label: {
+                        Text(level.displayName)
+                            .pixelFont(12)
+                            .frame(minWidth: 44)
+                            .padding(.vertical, 6)
+                            .background(selectedLevel == level ? GBColor.light : GBColor.darkest)
+                            .foregroundStyle(selectedLevel == level ? GBColor.darkest : GBColor.light)
+                            .pixelBorder(color: selectedLevel == level ? GBColor.lightest : GBColor.dark, width: 1)
+                    }
+                }
+            }
+        }
+    }
+
     private var monsterShowcase: some View {
         HStack(spacing: 16) {
             ForEach([1, 9, 20], id: \.self) { monsterID in
@@ -86,7 +123,9 @@ struct TitleScreenView: View {
     private var startButton: some View {
         Group {
             if showStartButton {
-                Button(action: onStart) {
+                Button {
+                    onStart(selectedLevel)
+                } label: {
                     HStack(spacing: 8) {
                         Text("▶")
                         Text("START")
@@ -115,5 +154,5 @@ struct TitleScreenView: View {
 }
 
 #Preview {
-    TitleScreenView(onStart: {})
+    TitleScreenView(onStart: { _ in })
 }

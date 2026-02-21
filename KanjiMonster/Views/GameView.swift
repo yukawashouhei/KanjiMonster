@@ -61,6 +61,17 @@ struct GameView: View {
 
     private var statusBar: some View {
         HStack {
+            Button {
+                viewModel.returnToTitle()
+            } label: {
+                Text("←")
+                    .pixelFont(14)
+                    .frame(width: 36, height: 32)
+                    .background(GBColor.dark)
+                    .foregroundStyle(GBColor.lightest)
+                    .pixelBorder(color: GBColor.light, width: 1)
+            }
+
             Text(viewModel.currentLevel.displayName)
                 .pixelFont(14)
                 .foregroundStyle(GBColor.lightest)
