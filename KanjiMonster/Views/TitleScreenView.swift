@@ -10,11 +10,25 @@ import SwiftUI
 struct TitleScreenView: View {
     let onStart: (KanjiLevel?) -> Void
 
+    private static let monsterCount = 15
+    private static let rotationInterval: TimeInterval = 15
+    private static let slotWidth: CGFloat = 80
+    private static let slotSpacing: CGFloat = 35
+    private static let slotHeight: CGFloat = 110
+    private static let showcaseHorizontalPadding: CGFloat = 16
+    private static let slideDuration: TimeInterval = 0.5
+
     @State private var titleScale: CGFloat = 0.8
-    @State private var monsterOffset: CGFloat = 20
     @State private var showStartButton = false
     @State private var blinkStart = false
     @State private var selectedLevel: KanjiLevel? = nil
+
+    /// 常に4体保持（左3体が表示中、4体目は右の画面外で待機）
+    @State private var monsterQueue: [Int] = [0, 1, 2, 3]
+    /// コンテナ全体のスライド量
+    @State private var scrollOffset: CGFloat = 0
+    /// スライド中かどうか（アニメーション制御用）
+    @State private var isSliding = false
 
     private var levelOrder: [KanjiLevel] {
         KanjiLevel.allCases.sorted { $0.rawValue > $1.rawValue }
@@ -47,15 +61,34 @@ struct TitleScreenView: View {
             withAnimation(.easeOut(duration: 0.6)) {
                 titleScale = 1.0
             }
-            withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                monsterOffset = -10
-            }
             withAnimation(.easeIn(duration: 0.5).delay(0.8)) {
                 showStartButton = true
             }
             withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true).delay(1.0)) {
                 blinkStart = true
             }
+            startMonsterRotationTimer()
+        }
+    }
+
+    private func startMonsterRotationTimer() {
+        _ = Timer.scheduledTimer(withTimeInterval: Self.rotationInterval, repeats: true) { _ in
+            rotateMonsters()
+        }
+    }
+
+    private func rotateMonsters() {
+        let step = Self.slotWidth + Self.slotSpacing
+        isSliding = true
+        withAnimation(.easeInOut(duration: Self.slideDuration)) {
+            scrollOffset = -step
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.slideDuration + 0.02) {
+            isSliding = false
+            let next = (monsterQueue.last! + 1) % Self.monsterCount
+            monsterQueue.removeFirst()
+            monsterQueue.append(next)
+            scrollOffset = 0
         }
     }
 
@@ -110,14 +143,19 @@ struct TitleScreenView: View {
     }
 
     private var monsterShowcase: some View {
-        HStack(spacing: 16) {
-            ForEach([1, 9, 20], id: \.self) { monsterID in
-                if let monster = MonsterData.allMonsters.first(where: { $0.id == monsterID }) {
-                    MonsterSpriteView(monster: monster)
-                        .offset(y: monsterOffset)
-                }
+        let visibleWidth = Self.slotWidth * 3 + Self.slotSpacing * 2 + Self.showcaseHorizontalPadding * 2
+        return HStack(spacing: Self.slotSpacing) {
+            ForEach(monsterQueue, id: \.self) { idx in
+                let monster = MonsterData.allMonsters[idx]
+                MonsterSpriteView(monster: monster)
+                    .frame(width: Self.slotWidth, height: Self.slotHeight)
             }
         }
+        .padding(.horizontal, Self.showcaseHorizontalPadding)
+        .offset(x: scrollOffset)
+        .animation(isSliding ? .easeInOut(duration: Self.slideDuration) : nil, value: scrollOffset)
+        .frame(width: visibleWidth, height: Self.slotHeight, alignment: .leading)
+        .clipped()
     }
 
     private var startButton: some View {
