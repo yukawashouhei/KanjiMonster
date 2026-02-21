@@ -17,6 +17,12 @@ struct TitleScreenView: View {
     private static let slotHeight: CGFloat = 110
     private static let showcaseHorizontalPadding: CGFloat = 16
     private static let slideDuration: TimeInterval = 0.5
+    /// カタカナサブタイトル用（GBColor.dark より約10%明るい）
+    private static let titleJaColor = Color(
+        red: 0.188 + 0.10 * (1 - 0.188),
+        green: 0.384 + 0.10 * (1 - 0.384),
+        blue: 0.188 + 0.10 * (1 - 0.188)
+    )
 
     @State private var titleScale: CGFloat = 0.8
     @State private var showStartButton = false
@@ -111,7 +117,7 @@ struct TitleScreenView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(height: 18)
-                .foregroundStyle(GBColor.dark)
+                .foregroundStyle(Self.titleJaColor)
         }
         .scaleEffect(titleScale)
     }
