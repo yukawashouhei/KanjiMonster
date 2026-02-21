@@ -94,21 +94,23 @@ struct TitleScreenView: View {
 
     private var titleText: some View {
         VStack(spacing: 8) {
-            Text("KANJI")
-                .pixelFont(36)
+            Image("TitleKanjiMonster")
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 88)
                 .foregroundStyle(GBColor.lightest)
-
-            Text("MONSTER")
-                .pixelFont(36)
-                .foregroundStyle(GBColor.light)
 
             Rectangle()
                 .fill(GBColor.dark)
                 .frame(width: 200, height: 2)
                 .padding(.top, 4)
 
-            Text("漢字モンスター")
-                .pixelFont(14)
+            Image("TitleKanjiMonsterJa")
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 18)
                 .foregroundStyle(GBColor.dark)
         }
         .scaleEffect(titleScale)
